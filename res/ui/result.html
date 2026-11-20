@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>完成</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: transparent; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans CJK SC", sans-serif;
+    color: #eef1f8;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .card {
+    height: 100%;
+    background: #171b26;
+    border: 1px solid #262c3c;
+    border-radius: 22px;
+    padding: 20px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+  .badge {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: rgba(61, 220, 132, .14);
+    border: 1.5px solid #3ddc84;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #3ddc84; font-weight: 600;
+    margin-top: 2px;
+  }
+  .badge.warn { background: rgba(255, 179, 64, .13); border-color: #ffb340; color: #ffb340; }
+  .title { font-size: 16px; font-weight: 600; margin-top: 12px; letter-spacing: .3px; }
+  .count { font-size: 34px; font-weight: 700; margin-top: 4px; line-height: 1.1; }
+  .count i { font-style: normal; font-size: 16px; color: #7b8499; font-weight: 500; }
+  .desc { font-size: 11.5px; color: #7b8499; margin-top: 6px; text-align: center; line-height: 1.6; }
+  .spacer { flex: 1; min-height: 8px; }
+  .ok {
+    width: 100%; height: 46px; border: none; border-radius: 13px;
+    background: #2a3040; color: #dfe4ef;
+    font-size: 15px; font-weight: 600;
+    transition: transform .12s, background .12s;
+  }
+  .ok:active { transform: scale(.975); background: #363d51; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="badge" id="badge">✓</div>
+  <div class="title" id="title">本次已完成</div>
+  <div class="count" id="count">0<i> / 0 天</i></div>
+  <div class="desc" id="desc">可以关闭脚本了</div>
+  <div class="spacer"></div>
+  <button class="ok" onclick="closeAll()">知道了</button>
+</div>
+
+<script>
+  function setResult(total, target) {
+    var okAll = total >= target;
+    document.getElementById('badge').className = okAll ? 'badge' : 'badge warn';
+    document.getElementById('badge').textContent = okAll ? '✓' : '!';
+    document.getElementById('title').textContent = okAll ? '目标已完成' : '提前结束';
+    document.getElementById('count').innerHTML = total + '<i> / ' + target + ' 天</i>';
+    document.getElementById('desc').textContent = okAll
+      ? '额度已到手，明天再来'
+      : '大概率是今日额度领完了，明天再试';
+  }
+
+  function closeAll() {
+    if (window.airscript && window.airscript.call) {
+      window.airscript.call('ok', '1');
+    }
+  }
+</script>
+</body>
+</html>
