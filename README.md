@@ -1,5 +1,13 @@
 # 汽水音乐 · Android 自动领取「免费听」
 
+<p>
+  <a href="https://lunhaoxaun.github.io/qishui-music-ascript/"><img alt="Project Page" src="https://img.shields.io/badge/Project%20Page-live-3ddc84?style=flat-square"></a>
+  <img alt="Platform" src="https://img.shields.io/badge/Platform-Android%20%C2%B7%20AScript-3ddc84?style=flat-square">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-blue?style=flat-square">
+</p>
+
+> **项目主页（含图解和踩坑记录）：https://lunhaoxaun.github.io/qishui-music-ascript/**
+>
 > 用 AScript（Android）自动完成「看广告 → 领免费听时长」这套重复操作。
 > 控件树定位，不用 OCR；运行前弹卡片设置目标天数，点「开始领取」才动手。
 >
