@@ -34,8 +34,10 @@ import traceback
 
 from ascript.android import action, system                      # type: ignore
 from ascript.android.system import R                            # type: ignore
-from ascript.android.screen import Ocr                          # type: ignore
 from ascript.android.node import Selector                       # type: ignore
+# 注意：Ocr 不在这里导入。AScript 一旦在启动时看到 screen/Ocr 依赖，
+# 就会立刻弹「录制或投放」的图色授权框，把无人值守流程挡在第一步。
+# 主链路只用控件树，OCR 仅在 SELFTEST 探针里抽查，所以在 selftest() 内部再导入。
 
 
 # ==================================================================
@@ -719,6 +721,7 @@ def selftest():
 
     log("\n--- OCR 兜底抽查（右上角）---")
     try:
+        from ascript.android.screen import Ocr   # 延迟导入，避免主流程触发图色授权
         rect = [int(w * 0.70), int(h * 0.03), w, int(h * 0.10)]
         res = Ocr.paddleocr(rect=rect, pattern=r"领取|秒")
         if res:
