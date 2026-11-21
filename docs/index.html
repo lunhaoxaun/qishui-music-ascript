@@ -116,6 +116,22 @@
   .stat .v{font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--green)}
   .stat .k{font-size:12px;color:var(--muted);margin-top:4px}
 
+  /* ---------- 视频 ---------- */
+  .video-shell{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:10px 10px 6px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .video-shell video{
+    display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;
+    border-radius:10px;background:#000;
+  }
+  .video-meta{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    flex-wrap:wrap;padding:13px 10px 7px;font-size:12.5px;color:var(--dim);
+  }
+  .video-meta a{color:var(--green);font-weight:600}
+  .video-meta a:hover{text-decoration:underline}
+
   /* ---------- 通用区块 ---------- */
   section{padding:64px 0}
   .sec-head{margin-bottom:34px}
@@ -280,6 +296,7 @@
   <div class="wrap nav">
     <div class="brand"><span class="dot"></span>汽水音乐 · 自动领取</div>
     <nav class="nav-links">
+      <a href="#video">视频演示</a>
       <a href="#how">工作流程</a>
       <a href="#why">技术选型</a>
       <a href="#pits">踩坑记录</a>
@@ -312,6 +329,10 @@
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
           快速开始
         </a>
+        <a class="btn btn-ghost" href="#video">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
+          看 2 分钟演示
+        </a>
         <a class="btn btn-ghost" href="https://github.com/lunhaoxaun/qishui-music-ascript" target="_blank" rel="noopener">
           查看源码
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7v7M13 3L3 13"/></svg>
@@ -335,6 +356,30 @@
     <div class="stat"><div class="v">0 次</div><div class="k">误点「立即下载」</div></div>
   </div>
 </div>
+
+<!-- 视频演示 -->
+<section id="video" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Video guide</div>
+      <h2>2 分钟看完完整操作</h2>
+      <p class="sec-desc">
+        开启无障碍、设置目标天数、自动领取、结果反馈——全部是真机实录。
+        广告段已加速并做模糊处理，旁白为中文。
+      </p>
+    </div>
+    <div class="video-shell reveal">
+      <video controls preload="metadata" playsinline poster="images/video-cover.png">
+        <source src="guide.mp4" type="video/mp4">
+        你的浏览器不支持视频播放，请 <a href="guide.mp4">下载观看</a>。
+      </video>
+      <div class="video-meta">
+        <span>02:01 · 1920×1080 · 中文配音 · 约 11 MB</span>
+        <a href="guide.mp4" download>下载视频 ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- 工作流程 -->
 <section id="how">

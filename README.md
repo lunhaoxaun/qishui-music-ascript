@@ -20,6 +20,8 @@
 
 <p align="center"><sub>运行前设置目标天数（左）· 跑完后的结果反馈（右）</sub></p>
 
+> **2 分钟完整操作演示（真机实录 + 中文配音）：[在线观看](https://lunhaoxaun.github.io/qishui-music-ascript/#video) · [下载 MP4](https://lunhaoxaun.github.io/qishui-music-ascript/guide.mp4)**
+
 ---
 
 ## ⚠️ 先读这一段
