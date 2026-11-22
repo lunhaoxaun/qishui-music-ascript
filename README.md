@@ -34,6 +34,8 @@
 
 涉及具体 App 的商标、内容版权均归其权利人所有，本项目与之无任何关联。**作者不对使用后果负责，也不提供任何形式的保证。**
 
+本项目源自 iOS 版 [qishuiAScriptProject](https://github.com/wei6718189/qishuiAScriptProject)（作者 wei6718189），Android 端为**独立重写**，仅沿用其问题拆解与流程思路，代码不共享。
+
 ---
 
 ## 一、它做什么
@@ -262,6 +264,6 @@ CLAIM_CLICK_RATIO = 0.42            # 领取成功取点比例，别调大（右
 
 ## 十、来源与许可
 
-- **灵感与思路来源**：iOS 版 [qishuiAScriptProject](https://github.com/wei6718189/qishuiAScriptProject)（原作者未声明开源许可）。本项目是在 Android 上**重新实现**：API 体系、定位策略（控件树 vs OCR）、容错结构都不同，但问题拆解受其启发，在此致谢。
+- **项目源自**：[qishuiAScriptProject](https://github.com/wei6718189/qishuiAScriptProject)（iOS 版，作者 wei6718189，未声明开源许可）。本项目为其 **Android 端独立重写**：API 体系、定位策略（控件树 vs OCR）、容错结构均不同，仅沿用其问题拆解与流程思路，代码不共享，在此致谢。
 - **`ascript_rules.md`** 来自 [ascript-cn/ascript-mcp](https://github.com/ascript-cn/ascript-mcp)，版权归其作者。
 - 本项目其余代码以 **MIT** 发布，见 [LICENSE](LICENSE)。
