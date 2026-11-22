@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>汽水音乐 · 自动领取 VIP 操作指南 v1.0</title>
+<meta name="description" content="用 AScript 在安卓手机上自动完成汽水音乐「看广告换 VIP」的完整配置指南：九项权限逐项讲清为什么，配好后怎么用。">
+<style>
+:root{
+  --ink:#111417; --ink2:#3d444c; --ink3:#6b747d;
+  --bg:#f3f5f7; --card:#fff; --line:#e5e9ee;
+  --green:#0fa968; --green-bg:#e8f8f0; --green-line:#bfe9d5;
+  --warn:#c2410c; --warn-bg:#fff4ec; --warn-line:#ffd9bf;
+  --blue:#1f6feb; --blue-bg:#eef4ff;
+  --red:#c42b2b; --red-bg:#fdeeee;
+  --r:16px; --sh:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:var(--green);text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+
+/* ---------- 顶部 ---------- */
+.hero{background:linear-gradient(160deg,#0b1220 0%,#132033 55%,#0e2b25 100%);color:#fff;padding:44px 0 34px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(15,169,104,.45),transparent 70%)}
+.hero .wrap{padding-bottom:0;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.12em;color:#8ff0c6;text-transform:uppercase;margin-bottom:14px}
+.eyebrow:before{content:"";width:22px;height:2px;background:#8ff0c6;border-radius:2px}
+h1{font-size:30px;line-height:1.35;margin:0 0 12px;font-weight:800;letter-spacing:-.5px}
+h1 em{font-style:normal;color:#63e3ad}
+.lead{color:#c7d2dd;font-size:15px;margin:0 0 22px;max-width:560px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12.5px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#e6edf3}
+
+/* ---------- 导航 ---------- */
+.nav{position:sticky;top:0;z-index:20;background:rgba(243,245,247,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:760px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;padding:10px 18px;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;font-size:13.5px;color:var(--ink2);padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);white-space:nowrap}
+.nav a:hover{color:var(--green);border-color:var(--green-line)}
+
+/* ---------- 区块 ---------- */
+section{margin-top:44px;scroll-margin-top:64px}
+h2{font-size:22px;margin:0 0 6px;letter-spacing:-.3px;display:flex;align-items:center;gap:10px}
+h2 .no{font-size:12px;font-weight:700;color:var(--green);background:var(--green-bg);border:1px solid var(--green-line);border-radius:8px;padding:2px 8px;letter-spacing:.04em}
+.sub{color:var(--ink3);font-size:14.5px;margin:0 0 18px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+
+/* ---------- 流程条 ---------- */
+.flow{display:grid;gap:8px;padding:18px}
+.flow-step{display:flex;gap:12px;align-items:flex-start}
+.flow-step .dot{flex:0 0 26px;height:26px;border-radius:50%;background:var(--green-bg);border:1px solid var(--green-line);color:var(--green);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:3px}
+.flow-step b{font-weight:700}
+.flow-step p{margin:0;color:var(--ink2);font-size:14.5px}
+.flow-arrow{padding-left:38px;color:#adb6bf;font-size:13px;line-height:1}
+
+/* ---------- 提示框 ---------- */
+.callout{border-radius:14px;padding:14px 16px;font-size:14.5px;margin:14px 0;border:1px solid}
+.callout .t{font-weight:700;display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:14.5px}
+.callout p{margin:0}
+.c-warn{background:var(--warn-bg);border-color:var(--warn-line);color:#7c2d12}
+.c-info{background:var(--blue-bg);border-color:#cfe0ff;color:#1a3f7a}
+.c-ok{background:var(--green-bg);border-color:var(--green-line);color:#0a6b45}
+.c-red{background:var(--red-bg);border-color:#f6cfcf;color:#8f1d1d}
+
+/* ---------- 表格 ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff;box-shadow:var(--sh)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid #eff2f5;vertical-align:top}
+th{background:#fafbfc;font-weight:700;font-size:13px;color:var(--ink2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.item{font-weight:700;white-space:nowrap}
+td.why{color:var(--ink2)}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:6px;margin-right:6px;vertical-align:1px}
+.t-must{background:var(--green-bg);color:#0a6b45}
+.t-no{background:#f1f3f5;color:#6b747d}
+.t-key{background:#fff0f0;color:#b42318}
+
+/* ---------- 步骤 ---------- */
+.step{margin:20px 0;overflow:hidden}
+.step-h{display:flex;gap:12px;align-items:center;padding:16px 18px 0}
+.num{flex:0 0 34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.step-h h3{margin:0;font-size:17.5px;letter-spacing:-.2px}
+.step-b{padding:10px 18px 18px}
+.step-b p{margin:0 0 10px}
+.kv{display:flex;gap:8px;font-size:14px;color:var(--ink2);margin:0 0 8px}
+.kv .k{flex:0 0 62px;color:var(--ink3)}
+.shot{margin:14px 0 4px;display:flex;gap:16px;align-items:center}
+.shot .ph{flex:0 0 42%;max-width:216px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#f7f9fa}
+.shot .ph img{width:100%;height:auto}
+.shot .cap{font-size:13px;color:var(--ink3);line-height:1.65}
+.shot .cap b{color:var(--ink2);display:block;font-size:13px;margin-bottom:2px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.act{font-size:12.5px;padding:4px 10px;border-radius:8px;background:#f7f9fa;border:1px solid var(--line);color:var(--ink2)}
+.act b{color:var(--ink)}
+.act.go{background:var(--green-bg);border-color:var(--green-line);color:#0a6b45}
+.act.no{background:var(--red-bg);border-color:#f6cfcf;color:#8f1d1d}
+
+/* ---------- 清单 ---------- */
+.check{display:grid;gap:2px}
+.check-item{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-bottom:1px solid #f0f3f5;cursor:pointer;user-select:none}
+.check-item:last-child{border-bottom:0}
+.box{flex:0 0 22px;height:22px;border-radius:7px;border:1.5px solid #cfd6dd;margin-top:3px;display:flex;align-items:center;justify-content:center;transition:.15s;background:#fff}
+.box svg{opacity:0;transform:scale(.7);transition:.15s}
+.check-item.done .box{background:var(--green);border-color:var(--green)}
+.check-item.done .box svg{opacity:1;transform:scale(1)}
+.check-item.done .txt{color:#98a2ad;text-decoration:line-through}
+.txt{font-size:15px;line-height:1.6}
+.txt small{display:block;color:var(--ink3);font-size:12.5px;text-decoration:none}
+.check-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink3)}
+.check-head b{color:var(--ink);font-size:15px}
+
+/* ---------- FAQ ---------- */
+details{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;overflow:hidden}
+details[open]{box-shadow:var(--sh)}
+summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:var(--ink3);font-weight:400;font-size:18px;line-height:1}
+details[open] summary:after{content:"–"}
+details p{margin:0;padding:0 16px 16px;color:var(--ink2);font-size:14.5px}
+
+/* ---------- 页脚 ---------- */
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.8px;line-height:1.8}
+footer b{color:var(--ink2)}
+.printbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{font:inherit;font-size:13.5px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+.btn:hover{border-color:var(--green-line);color:var(--green)}
+
+@media (max-width:520px){
+  h1{font-size:25px}
+  .shot{flex-direction:column}
+  .shot .ph{flex:none;max-width:210px}
+  .flow-step p{font-size:14px}
+}
+@media print{
+  .nav,.printbar{display:none}
+  body{background:#fff}
+  .card,.tbl-wrap{box-shadow:none}
+  .step{break-inside:avoid}
+  .hero{background:#111;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">AScript × 汽水音乐</div>
+    <h1>让手机每天自动<em>看广告领 VIP</em></h1>
+    <p class="lead">汽水音乐有个活动：看一条约 30 秒的广告，换 1 天免费畅听时长。手动点一轮要 35～40 秒，攒 10 天差不多 6 分钟全得盯着。这份指南把「配置一次，之后它自己领」的全过程写清楚——重点不是点哪个按钮，而是<strong>每项权限为什么必须给</strong>。</p>
+    <div class="meta">
+      <span class="chip">9 项配置 + 2 项补充</span>
+      <span class="chip">照着做约 10–15 分钟</span>
+      <span class="chip">ColorOS 16 实机录制</span>
+      <span class="chip">配一次，长期用</span>
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-in">
+    <a href="#how">原理</a>
+    <a href="#perms">九项权限</a>
+    <a href="#steps">分步操作</a>
+    <a href="#use">配好怎么用</a>
+    <a href="#faq">常见疑问</a>
+    <a href="#check">自检清单</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 0 风险 -->
+<section id="risk" style="margin-top:26px">
+  <div class="callout c-warn">
+    <div class="t">⚠️ 动手之前先看这三条</div>
+    <p>① 这是<strong>第三方自动化 App</strong>（AScript）在读屏权限下模拟点击，平台的活动规则未必允许自动化参与，<strong>账号风险由你自己承担</strong>；只在自己登录的账号上、只做官方活动本身的流程。<br>
+    ② 全程<strong>不需要</strong>截图、录屏、图色识别权限——凡是要这些的弹框，一律点「取消 / 拒绝」。<br>
+    ③ 下文菜单名以 ColorOS 16（安卓 15 基底）为准，其他品牌机型叫法可能不同（如「辅助功能」「显示在其他应用上层」），按含义找同名开关即可。</p>
+  </div>
+</section>
+
+<!-- 1 原理 -->
+<section id="how">
+  <h2><span class="no">01</span>它是怎么跑起来的</h2>
+  <p class="sub">一句话：脚本不"看画面"，它读系统的界面结构清单，然后替你点。</p>
+
+  <div class="card">
+    <div class="flow">
+      <div class="flow-step"><div class="dot">1</div><div><b>打开汽水音乐，进「免费听」入口</b><p>脚本在后台把汽水音乐拉起来，不是你在点。</p></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><div class="dot">2</div><div><b>进广告页，等约 30 秒倒计时</b><p>这段时间它只是在读屏幕上的倒计时文字。</p></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><div class="dot">3</div><div><b>出现「领取成功」，点掉</b><p>再关掉「第 N 天畅听」弹窗。</p></div></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><div class="dot">4</div><div><b>累计 +1，回到起点开下一轮</b><p>一轮 35～40 秒，10 天约 6 分钟，全程无人值守。</p></div></div>
+    </div>
+  </div>
+
+  <div class="callout c-info">
+    <div class="t">🧩 为什么这套方案不用"识图"</div>
+    <p>AScript 跑的是<strong>无障碍模式</strong>：安卓会把当前界面上的按钮、文字、开关整理成一份结构清单给读屏软件用，脚本读的就是这份清单——找到"免费听""领取"这类控件，算出坐标再模拟点击。所以它不需要截图，也不需要图色/录屏权限，比你想象的轻。</p>
+  </div>
+</section>
+
+<!-- 2 权限表 -->
+<section id="perms">
+  <h2><span class="no">02</span>九项权限，每项不给会怎样</h2>
+  <p class="sub">这张表是全篇的主线。配置时按「不给的后果」去理解，就不会觉得是在瞎开开关。</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>要开的东西</th><th>不给会怎样</th></tr></thead>
+      <tbody>
+        <tr><td class="item">无障碍服务<br><span class="tag t-key">最关键</span></td><td class="why">脚本的"手"。不开，一行代码都执行不了，后面全部免谈。</td></tr>
+        <tr><td class="item">悬浮窗</td><td class="why">看不到那个「10 天 / 开始领取」的控制面板和实时进度。</td></tr>
+        <tr><td class="item">存储 / 文件访问</td><td class="why">工程文件和运行日志写不进去，脚本直接报错。</td></tr>
+        <tr><td class="item">通知</td><td class="why">没有常驻通知，后台更容易被系统杀掉。<b>新装默认是关的，必须手动开。</b></td></tr>
+        <tr><td class="item">自启动</td><td class="why">手机重启之后它不会自己起来，得你手动开一次。</td></tr>
+        <tr><td class="item">关联启动</td><td class="why">系统会拦住"AScript 去打开汽水音乐"这个跨应用动作，脚本卡在第一步。</td></tr>
+        <tr><td class="item">多任务锁定</td><td class="why">一键清理后台时被顺手清掉，领到一半就停。</td></tr>
+        <tr><td class="item">耗电管理<br>→ 完全允许后台</td><td class="why"><b>跑几分钟就被系统掐断</b>，这是头号失败原因。<span style="color:#7c2d12">系统分身里没有这个入口，分身用户可跳过。</span></td></tr>
+        <tr><td class="item">后台弹出界面</td><td class="why">脚本拉不起汽水音乐，会停在那等你手动点一下。</td></tr>
+        <tr><td class="item">录屏 / 图色<span class="tag t-no">不需要</span></td><td class="why">AScript 自己会弹框要，<b>点取消</b>。给了反而多一项常驻权限。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 3 分步 -->
+<section id="steps">
+  <h2><span class="no">03</span>分步操作</h2>
+  <p class="sub">每个步骤都给了实机截图。截图里出现的数字、开关位置对不上时，以你手机上"含义相同的开关"为准。</p>
+
+  <!-- Step 1 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">1</div><h3>先装两个 App</h3></div>
+    <div class="step-b">
+      <p>AScript 去官网 <b>ascript.cn</b> 下安卓版；汽水音乐在应用商店搜。装完打开汽水音乐，用手机号登录——<strong>登录这步只能你自己来</strong>，脚本不处理账号。</p>
+      <div class="callout c-warn" style="margin-bottom:6px">
+        <div class="t">系统分身的特殊情况</div>
+        <p>在 ColorOS 系统分身里点安装包，「继续安装」可能灰着点不动（应用未通过系统验证）。这时回<strong>主系统</strong>装好再进分身，或干脆在主系统里跑，都能用。</p>
+      </div>
+      <div class="acts">
+        <span class="act go">准备：<b>AScript 4.0.17</b></span>
+        <span class="act go">准备：<b>汽水音乐已登录</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">2</div><h3>第一次打开，选「无障碍模式」</h3></div>
+    <div class="step-b">
+      <p>AScript 会先问你用哪种运行模式。选<strong>无障碍模式</strong>，不要选图色/录屏那套。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g01_mode.jpg" alt="AScript 运行模式选择页，无障碍模式被选中" loading="lazy"></div>
+        <div class="cap"><b>选上面那个</b>无障碍模式靠读界面结构工作，稳定、不占录屏，也不需要额外授权。下面依赖录屏+截图识别的模式，本项目用不上。</div>
+      </div>
+      <div class="acts"><span class="act go">点选：<b>无障碍模式</b></span><span class="act no">不要选：<b>图色 / 录屏模式</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">3</div><h3>文件访问：允许</h3></div>
+    <div class="step-b">
+      <p>第一次运行会要文件权限，用来读写工程和日志。看到系统的文件访问弹框，点<strong>允许</strong>。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g02_file.jpg" alt="系统文件访问权限弹框，选择允许" loading="lazy"></div>
+        <div class="cap"><b>选「允许」</b>之后脚本才能把工程文件解压到 <code>airscript/model/qishui</code>，并写入运行日志。点拒绝的话，下一步就会直接报错。</div>
+      </div>
+      <div class="acts"><span class="act go">点：<b>允许</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">4</div><h3>悬浮窗：去设置里打开</h3></div>
+    <div class="step-b">
+      <p>点「悬浮窗权限」那一行，系统会跳到权限页。有的机型还会先弹一个"是否允许显示在其他应用上层"的申请，点<strong>允许</strong>即可；如果没弹，就自己在列表里找 AScript。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g04_list.jpg" alt="悬浮窗权限应用列表，可按名称搜索" loading="lazy"></div>
+        <div class="cap"><b>列表里找 AScript</b>应用多的时候直接点右上角搜索，输 <code>AScript</code> 或 <code>airscript</code>，比一个个翻快。</div>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g07_switch.jpg" alt="AScript 悬浮窗开关已变为绿色开启状态" loading="lazy"></div>
+        <div class="cap"><b>开关变绿才算开</b>回到 AScript 主页，「悬浮窗权限」那一行应该显示"已授权"。</div>
+      </div>
+      <div class="acts"><span class="act go">结果：<b>已授权</b></span><span class="act">入口：<b>设置 → 权限 → 悬浮窗</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">5</div><h3>无障碍：最难也最关键的一步</h3></div>
+    <div class="step-b">
+      <p>路径是 <b>设置 → 辅助功能 → 无障碍 → 已下载的应用 → AScript</b>，打开开关后会跳出一个红色警告页，上面有个「快速启用」的按钮。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g08_access.jpg" alt="无障碍设置里 AScript 的快速启用入口" loading="lazy"></div>
+        <div class="cap"><b>快速启用</b>系统会提示"同时按住两个音量键 3 秒"这类确认方式，按提示做一次就好。</div>
+      </div>
+      <div class="callout c-warn">
+        <div class="t">⚠️ 会弹一个很吓人的框：「要允许 AScript 完全控制你的设备吗？」</div>
+        <p>这是安卓给无障碍服务的<strong>标准文案</strong>，所有读屏软件都会触发。点<strong>允许</strong>。它给的是"读屏幕内容 + 代你点按"两项能力，正是脚本必需的那两项。<strong>不要在这里点拒绝</strong>，否则前面所有配置都白做。</p>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g09_confirm.jpg" alt="完全控制设备确认弹窗，两个能力说明与允许按钮" loading="lazy"></div>
+        <div class="cap"><b>点右下角「允许」</b>框里写的"查看和控制屏幕""查看和执行操作"，就是脚本要的东西。</div>
+      </div>
+      <div class="callout c-red">
+        <div class="t">⛔ 紧接着还会有个录屏/投放的框 —— 点取消</div>
+        <p>AScript 会顺手要"录制或投放"权限。本项目不需要截屏，<strong>一律点取消</strong>。给了会多一层常驻的录屏权限，还可能在通知栏留个红点。</p>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g10_record.jpg" alt="录制或投放权限弹窗，含取消与下一步按钮" loading="lazy"></div>
+        <div class="cap"><b>点白色的「取消」</b>蓝色填色的「下一步」是继续授权，别点。这一步是本篇最容易被点错的地方。</div>
+      </div>
+      <div class="acts"><span class="act go">弹窗：<b>允许</b></span><span class="act no">录屏框：<b>取消</b></span><span class="act">结果：<b>已开启</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">6</div><h3>验收：主页四项 + 保活诊断 4 / 0 / 3</h3></div>
+    <div class="step-b">
+      <p>回到 AScript 主页，先看这四项。这是"我配对了没有"的第一道检查点。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g11_home.jpg" alt="AScript 主页四项权限状态" loading="lazy"></div>
+        <div class="cap"><b>四项都对，才继续</b>运行模式=无障碍模式、悬浮窗权限=已授权、无障碍权限=已开启、图色权限=<span style="color:#c42b2b">未开启</span>。最后一项是红的<strong>属于正常</strong>，本项目不需要图色。</div>
+      </div>
+      <p>再点「保活诊断」跑一遍自检，理想结果是 <strong>4 项通过 / 0 项需调整 / 3 项待手动确认</strong>。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g12_health.jpg" alt="保活诊断结果 4 项已通过、0 项需调整、3 项待确认" loading="lazy"></div>
+        <div class="cap"><b>4 / 0 / 3 就是配好了</b>上方四个绿勾是系统自动检测（电池优化白名单、后台运行限制、省电模式、后台联网），下面"手动检查·3 项"指的是厂商策略层面的项，<strong>需要你自己点进去看一眼</strong>。</div>
+      </div>
+      <div class="callout c-ok">
+        <div class="t">✅ 「3 项待手动确认」不是失败</div>
+        <p>很多人卡在这以为没配好，反复折腾。它不是错误项，只是 AScript 没法替你判断的系统策略，点进去确认一眼、退回来它会自动重新检测。看到 4/0/3 就可以往下走了。</p>
+      </div>
+      <p>点「开始」时如果弹出<strong>「保持开启」</strong>之类的小窗，选保持开启/允许，别让它自己退。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g13_popup.jpg" alt="系统提示检测到 AScript 获取无障碍权限，提供保持开启选项" loading="lazy"></div>
+        <div class="cap"><b>要选「保持开启」</b>系统在问"要不要关掉这个无障碍权限"，选项上还带着 (3) 的读秒，尽快确认，别让它自己走完。</div>
+      </div>
+      <div class="acts"><span class="act">运行模式：<b>无障碍</b></span><span class="act">悬浮窗：<b>已授权</b></span><span class="act">图色：<b>未开启（正常）</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">7</div><h3>通知：默认是关的，必须手动开</h3></div>
+    <div class="step-b">
+      <p>新装应用的通知权限默认关着，而这条常驻通知就是它"活着"的凭证——没有它，后台更容易被清。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g14_notif.jpg" alt="通知权限页显示不允许通知" loading="lazy"></div>
+        <div class="cap"><b>先看到的是"不允许"</b>别以为它坏了，这是出厂默认。</div>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g15_allow.jpg" alt="通知开关打开后变为允许通知" loading="lazy"></div>
+        <div class="cap"><b>打开后就变成"允许通知"</b>顺便把"横幅/锁屏"里的常驻类通知也放开，运行时会看到脚本状态。</div>
+      </div>
+      <div class="acts"><span class="act go">改成：<b>允许通知</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 8 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">8</div><h3>自启动 + 关联启动：两个都要开</h3></div>
+    <div class="step-b">
+      <p>入口是 <b>设置 → 应用 → 应用管理 → AScript</b>。这两项都在应用详情里，<strong>不在"特殊权限"里</strong>，找不到的时候别乱翻。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g19_link_before.jpg" alt="AScript 应用详情页中的自启动、关联启动与特殊应用权限入口" loading="lazy"></div>
+        <div class="cap"><b>应用详情长这样</b>「自启动」「关联启动」都在列；再往下那块「特殊应用权限」就是后面放"后台弹出界面"的地方。</div>
+      </div>
+      <p><b>自启动</b>：进去后页面分「允许自启动」「禁止自启动」两组。AScript 一开始在下面那组、开关是关的（允许 4 个 / 禁止 21 个）。把它的开关打开，它会移到上面一组，两个数字变成 <strong>5 / 20</strong>。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g17_boot_no.jpg" alt="自启动页当面状态：允许 4 个，禁止 21 个，AScript 在后面一组未开启" loading="lazy"></div>
+        <div class="cap"><b>改之前</b>AScript 在「禁止」组里，开关是灰的。这两组数字就是"改没改成功"的凭证。</div>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g18_boot_yes.jpg" alt="自启动页改后状态：允许 5 个，AScript 已在允许组并打开" loading="lazy"></div>
+        <div class="cap"><b>改之后</b>AScript 跑到「允许」组最上面，计数 4→5、21→20。这一步决定手机重启后它能不能自己起来。</div>
+      </div>
+      <p><b>关联启动</b>：同样找 AScript，允许它"被其他应用/自身拉起"。不改的话，系统会拦住"AScript 打开汽水音乐"这个动作，脚本永远卡在第一步。改完同样是数字变化：<strong>5→6、19→18</strong>。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g19b_link_after.jpg" alt="关联启动页：允许 6 个，AScript 已在允许组并打开" loading="lazy"></div>
+        <div class="cap"><b>关联启动也要开</b>它管的是跨应用跳转，和自启动不是一回事，两个都得给。</div>
+      </div>
+      <div class="acts"><span class="act go">自启动：<b>开（4→5）</b></span><span class="act go">关联启动：<b>开（5→6）</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 9 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">9</div><h3>多任务锁定：把 AScript 钉住</h3></div>
+    <div class="step-b">
+      <p>打开最近任务（多任务）界面，长按或点 AScript 卡片上的「更多」/三个点，选<strong>锁定</strong>。卡片右上角会出现一个小锁，之后一键清理不会把它清掉。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g20_lock.jpg" alt="最近任务卡片菜单里的锁定选项" loading="lazy"></div>
+        <div class="cap"><b>选「锁定」</b>这个小锁图标很小，确认它真的出现了再退出——没有锁，清理后台就前功尽弃。</div>
+      </div>
+      <div class="acts"><span class="act go">结果：<b>卡片出现锁图标</b></span></div>
+    </div>
+  </div>
+
+  <!-- Step 10 -->
+  <div class="card step">
+    <div class="step-h"><div class="num">10</div><h3>主系统用户：再补两项</h3></div>
+    <div class="step-b">
+      <div class="callout c-warn">
+        <div class="t">💡 用系统分身的，这一步跳过</div>
+        <p>ColorOS 的分身空间里，AScript 应用详情页<strong>没有「耗电管理」这一项</strong>，所以分身用户没有这两步，直接看下一节。</p>
+      </div>
+      <p><b>耗电管理（必须）</b>：设置 → 应用 → 应用管理 → AScript → 耗电管理 → <strong>完全允许后台行为</strong>。不改的话，脚本跑几分钟就被系统掐掉，这是最常见的"明明配好了却不动"。</p>
+      <p><b>后台弹出界面（建议）</b>：在"特殊应用权限"里找到"后台弹出界面"，允许 AScript。不给的话脚本拉不起汽水音乐，会停在那等你手动点。</p>
+      <div class="acts"><span class="act go">耗电管理：<b>完全允许后台</b></span><span class="act">后台弹出界面：<b>允许</b></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 使用 -->
+<section id="use">
+  <h2><span class="no">04</span>配好之后，怎么用</h2>
+  <p class="sub">配置只做一次。之后就是"选天数 → 开始领取 → 等它自己领完"。</p>
+
+  <div class="card step">
+    <div class="step-h"><div class="num">▶</div><h3>回到 AScript，运行 qishui</h3></div>
+    <div class="step-b">
+      <p>在 AScript 的「小程序列表」里找到 <b>qishui</b>，点运行。屏幕上会浮出这个面板：选本次要连续领几天（3 / 5 / 10 / 15 / 20），然后点绿色按钮<strong>「开始领取」</strong>。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g21_panel.jpg" alt="悬浮控制面板：选择天数与开始领取按钮" loading="lazy"></div>
+        <div class="cap"><b>面板上的原话</b>每个广告约 35 秒，10 天约需 6 分钟；今日额度用完会自动停止，随时可按悬浮球中断。没自动跳转时，手动点开汽水音乐即可。</div>
+      </div>
+      <p>之后不用管它。脚本自己点开免费听、等 30 秒广告、领奖励、关面板，一轮接一轮。攒够天数后，面板会告诉你额度已到账。</p>
+      <div class="shot">
+        <div class="ph"><img src="assets/guide/g22_result.jpg" alt="结果页显示目标已完成，额度已到手" loading="lazy"></div>
+        <div class="cap"><b>成功长这样</b>「目标已完成 3/3 天 · 额度已到手，明天再来」。看到这一句就可以收工了。</div>
+      </div>
+      <div class="callout c-info">
+        <div class="t">📌 中途想停怎么办</div>
+        <p>点悬浮球里的停止，或直接在面板上中断。今日额度用完它会自己停，不会无限刷。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 FAQ -->
+<section id="faq">
+  <h2><span class="no">05</span>六个最容易卡住的地方</h2>
+  <p class="sub">看完这一段，基本不用再回头找原因。</p>
+
+  <details>
+    <summary>弹窗写「完全控制你的设备」，真的敢点允许吗？</summary>
+    <p>敢。这是安卓给所有无障碍服务的统一文案，输入法、读屏、屏幕朗读都会触发同样的框。它授予的是"读取屏幕内容和代表你点按"两项能力，正好是脚本需要的；<b>录屏、摄像头、文件全盘这些并不在这个框里</b>，所以不用因为它吓人就点拒绝。</p>
+  </details>
+
+  <details>
+    <summary>为什么还要我点「取消」录屏权限？两个弹框不是都要给吗？</summary>
+    <p>不是。本项目只用无障碍读控件树，<b>完全不截图</b>，所以录屏/图色权限给了也没用，反而多一层常驻权限和一个通知栏红点。AScript 会主动要，是它兼容另一种识图模式，你点取消即可，不影响运行。</p>
+  </details>
+
+  <details>
+    <summary>保活诊断显示「3 项待手动确认」，是不是没配好？</summary>
+    <p>不是，<b>4 项通过 / 0 项需调整 / 3 项待确认就是配好的状态</b>。前三项是 AScript 能自动读到的（电池优化、后台限制、省电模式、后台联网）；"待确认"那三项属于厂商策略，系统不让第三方 App 自行判断，得你自己点进去看一眼。点完返回，页面会自动重新检测。</p>
+  </details>
+
+  <details>
+    <summary>通知权限为什么一打开就是关的？</summary>
+    <p>安卓对<b>新装应用默认关闭通知</b>。而这条常驻通知是"进程还活着"的可视信号，也是系统判定它属于活跃应用的一个依据——没有通知，后台更容易被杀。所以必须手动打开。</p>
+  </details>
+
+  <details>
+    <summary>配好了一切都绿，跑几分钟就停了？</summary>
+    <p>按顺序排查三件事：① <b>耗电管理</b>有没有改成"完全允许后台行为"（主系统必查，这是头号原因）；② 有没有被"一键清理"清掉，<b>多任务锁</b>开了没有；③ 有没有手滑把汽水音乐或 AScript 从后台划掉。分身用户没有耗电管理入口，那就更要注意别手动清后台。</p>
+  </details>
+
+  <details>
+    <summary>脚本点不开汽水音乐，一直卡在那等人点？</summary>
+    <p>两个开关之一没给：<b>关联启动</b>（系统拦截跨应用拉起）、<b>后台弹出界面</b>（特殊应用权限里）。补上再跑一次。如果只是偶发，面板上也写了兜底办法——手动点开汽水音乐一次，脚本会接管后面的流程。</p>
+  </details>
+</section>
+
+<!-- 6 自检 -->
+<section id="check">
+  <h2><span class="no">06</span>开跑前的自检清单</h2>
+  <p class="sub">点一下就能勾掉，刷新页面也还在。全部勾完再按「开始领取」。</p>
+
+  <div class="card">
+    <div class="check-head"><b>配置自检</b><span id="prog">0 / 9</span></div>
+    <div class="check" id="list">
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">跑的是无障碍模式<small>主页「运行模式」显示无障碍模式</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">悬浮窗已授权<small>能看到「10 天 / 开始领取」面板</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">无障碍已开启<small>「完全控制设备」那个框点了允许</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">文件访问已允许<small>工程能解压、日志能写入</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">录屏 / 图色已拒绝<small>主页「图色权限」显示未开启，正常</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">保活诊断 4 / 0 / 3<small>3 项待手动确认是正常状态</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">通知已允许<small>新装默认关闭，需要手动开</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">自启动 + 关联启动已开<small>重启能自己起、能拉起汽水音乐</small></span></label>
+      <label class="check-item"><span class="box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span><span class="txt">多任务已锁定<small>卡片上有小锁；主系统另设「完全允许后台」</small></span></label>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>关于这份指南</b><br>
+  版本 v1.0（2026-11-22）· 截图取自 ColorOS 16 系统分身实机操作录像，1080×2520 原始帧按动作位置裁切，未做内容修饰；界面上的日期、应用数量等随时间变化，仅作位置参考。<br>
+  文中时长（一轮 35～40 秒、10 天约 6 分钟）为面板自带说明；配置耗时 10–15 分钟为按步骤估算，实际取决于机型与熟练度。<br>
+  本指南只记录操作过程，不评价活动规则，也不保证长期可用——平台随时可能调整入口或限制自动化参与，遇到界面变化以你手机上的实际文案为准。
+  <div class="printbar">
+    <button class="btn" onclick="window.print()">打印 / 存为 PDF</button>
+    <button class="btn" onclick="resetAll()">清空自检记录</button>
+  </div>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY='qs_guide_v10_check';
+  var items=document.querySelectorAll('#list .check-item');
+  var prog=document.getElementById('prog');
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){saved={}}
+
+  function refresh(){
+    var n=0;
+    items.forEach(function(el,i){ if(el.classList.contains('done')) n++; });
+    prog.textContent=n+' / '+items.length;
+    prog.style.color = n===items.length ? '#0fa968' : '';
+  }
+  items.forEach(function(el,i){
+    if(saved[i]) el.classList.add('done');
+    el.addEventListener('click',function(e){
+      e.preventDefault();
+      el.classList.toggle('done');
+      saved[i]=el.classList.contains('done');
+      try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e2){}
+      refresh();
+    });
+  });
+  refresh();
+
+  window.resetAll=function(){
+    saved={};
+    items.forEach(function(el){el.classList.remove('done')});
+    try{localStorage.removeItem(KEY)}catch(e){}
+    refresh();
+  };
+
+  // 导航当前区块高亮
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  function onScroll(){
+    var y=window.scrollY+90,idx=0;
+    secs.forEach(function(s,i){ if(s && s.offsetTop<=y) idx=i; });
+    links.forEach(function(a,i){
+      a.style.color = i===idx ? '#0fa968' : '';
+      a.style.borderColor = i===idx ? '#bfe9d5' : '';
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>
